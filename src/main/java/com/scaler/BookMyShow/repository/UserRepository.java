@@ -2,8 +2,21 @@ package com.scaler.BookMyShow.repository;
 
 import com.scaler.BookMyShow.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+
+/*
+
+using @Repository in interface userRepository means that
+we will be going to use this userRepository dependency
+in userServiceImpl
+
+spring boot automatically understands that this will be
+injected somewhere
+
+*/
+@Repository
 
 public interface UserRepository extends JpaRepository<User,Long> {
 

@@ -50,3 +50,13 @@ java.lang.RuntimeException: Driver com.mysql.jdbc.Driver claims to not accept jd
 
 org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is java.lang.RuntimeException: Driver com.mysql.jdbc.Driver claims to not accept jdbcUrl, jdbc::mysql://localhost:3306/bms_aug23
 
+-----------------------------------------------------------------------
+
+For all dependent objects -> we use annotation called @Component
+but if they also do something specific -> @Repository, @Service
+
+
+-----------------------------------------------------------------------
+
+For Controllers which support RestAPIs -> @RestController
+For Simple controllers which does not support REST API's  -> @Controller

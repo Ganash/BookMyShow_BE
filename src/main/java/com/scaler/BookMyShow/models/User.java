@@ -16,9 +16,17 @@ public class User extends BaseModel {
 
     private String email;
 
+    private String password;
+
     // one user can book many tickets
     @OneToMany
     private List<Ticket> tickets;
 
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
