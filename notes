@@ -60,3 +60,36 @@ but if they also do something specific -> @Repository, @Service
 
 For Controllers which support RestAPIs -> @RestController
 For Simple controllers which does not support REST API's  -> @Controller
+
+----------------------------------------------------------------------------
+
+    /*
+
+    Why AutoWired required?
+
+    Before using @Autowired
+
+    * Basically what Autowired does is that, usercontroller is dependent on userservice and
+    * userService is dependent on userRepository. Imagine as a developer if you have to take care
+    * for dependencies then what you do, first of all you will create the object of userRepository
+    * then you will create the object of userService then you will inject the userRepository object
+    * inside it then you will create userController object and then you will inject userService
+    * object inside it. So you will manually create 3 seperate objects and 2 injections (repository
+    * in service and service in controller). So developer/user need to do 5 tasks manually
+    *
+
+    After Using @Autowired
+
+    * If we use @Autowired then we don't need to do anything manually, everything will be taken
+    * care automatically, spring will take care of injection of objects. so when you say
+    * userController @Autowired userService means userController is dependent on userService
+    * object and spring will automatically takes care of creation of userService object and
+    * injects userService object into the userController.
+    *
+    * So @Autowired is an annotation which takes care of dependency mgmt in spring and does
+    * auto dependency mgmt for developers so that we as developer don't worry about all these
+    * boiler plate codes & stuffs
+    *
+    *
+
+    * */
