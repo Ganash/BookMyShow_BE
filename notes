@@ -93,3 +93,7 @@ For Simple controllers which does not support REST API's  -> @Controller
     *
 
     * */
+
+
+    DTOs are supposed to be used by Controller layer only, Service and Repository layer should not
+    deal with DTOs, they should only deal with internal models.
