@@ -97,3 +97,18 @@ For Simple controllers which does not support REST API's  -> @Controller
 
     DTOs are supposed to be used by Controller layer only, Service and Repository layer should not
     deal with DTOs, they should only deal with internal models.
+
+--------------------------------------------------------------------------------------
+
+User has one to many tickets
+
+A user has 5 tickets
+<1,2,3,4,5>
+
+User A transferring ticket 5 to user B
+5
+
+Ticket table
+ticketId, userId
+5           B
+
