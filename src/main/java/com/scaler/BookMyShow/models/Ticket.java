@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -36,9 +37,9 @@ public class Ticket extends BaseModel{
     @ManyToMany
     private List<ShowSeat> showSeats;
 
-    private Date bookedAt;
+    private LocalDateTime bookedAt;
 
-    private int amount;
+    private double amount;
 }
 
 /*

@@ -1,14 +1,20 @@
 package com.scaler.BookMyShow.service;
 
+import com.scaler.BookMyShow.exception.ShowSeatNotAvailableException;
 import com.scaler.BookMyShow.exception.TicketNotFoundException;
 import com.scaler.BookMyShow.exception.UserNotFoundException;
 import com.scaler.BookMyShow.models.*;
+import com.scaler.BookMyShow.repository.ShowRepository;
 import com.scaler.BookMyShow.repository.ShowSeatRepository;
 import com.scaler.BookMyShow.repository.TicketRepository;
 import com.scaler.BookMyShow.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,9 +30,58 @@ public class TicketServiceImpl implements TicketService{
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ShowRepository showRepository;
+
+
+    /*
+    *
+    * Annotation - @Transactional(isolation = Isolation.SERIALIZABLE) = whatever database related actions
+    * I will take and whatever writes and updates I will do, all of them will be marked as
+    * serializable actions.
+    *
+    * Whatever database trasactions I do inside this bookTicket() method, this will be mark isolation lever
+    * as serializable
+    * */
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Ticket bookTicket(Long userId, List<Long> showSeatIds, Long showId) {
-        return null;
+
+        User bookedByUser = userRepository.findById(userId).get();
+        Show show = showRepository.findById(showId).get();
+
+        for (Long showSeatId: showSeatIds){
+
+            ShowSeat showSeat = showSeatRepository.findById(showSeatId).get();
+
+            if (showSeat.getShowSeatStatus().equals(ShowSeatStatus.AVAILABLE)){
+                showSeat.setShowSeatStatus(ShowSeatStatus.LOCKED);
+            }
+            else {
+
+                throw new ShowSeatNotAvailableException("Show Seat is not Available");
+            }
+            showSeatRepository.save(showSeat);
+        }
+
+        boolean paymentDone = paymentCheck();
+        List<ShowSeat> showSeats = new ArrayList<>();
+        double amount = 0;
+        if (paymentDone){
+
+            for (Long showSeatId: showSeatIds){
+
+                ShowSeat showSeat = showSeatRepository.findById(showSeatId).get();
+                showSeat.setShowSeatStatus(ShowSeatStatus.BOOKED);
+                showSeat = showSeatRepository.save(showSeat);
+                showSeats.add(showSeat);
+                amount = amount + showSeat.getPrice();
+
+            }
+        }
+
+
+        return ticketGenerator(bookedByUser,show, showSeats, amount);
     }
 
     @Override
@@ -95,5 +150,21 @@ public class TicketServiceImpl implements TicketService{
 //        ticket.setUser(toUserOptional.get());
 //
 //        return ticketRepository.save(ticket);
+    }
+
+    private boolean paymentCheck(){
+        return true;
+    }
+
+    private Ticket ticketGenerator(User user, Show show, List<ShowSeat> showSeats, double amount){
+
+        Ticket ticket = new Ticket();
+        ticket.setUser(user);
+        ticket.setShow(show);
+        ticket.setAmount(amount);
+        ticket.setBookedAt(LocalDateTime.now());
+        ticket.setBookingStatus(BookingStatus.CONFIRMED);
+
+        return ticketRepository.save(ticket);
     }
 }
